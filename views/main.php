@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title>Zew</title>
+  <title>Zew</title>
+  <link rel="shortcut icon" href="<?php echo ROOT_PATH; ?>favicon.ico" type="image/x-icon"/>
 	<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>assets/css/bootstrap.css">
 	<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>assets/css/style.css">
 </head>
@@ -29,9 +30,9 @@
             <li><a href="<?php echo ROOT_URL; ?>raport">Raporty</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-	            <li><a href="<?php echo ROOT_URL; ?>">Witaj <?php echo $_SESSION['user_data']['login']; ?></a></li>
-							<li><a href="<?php echo ROOT_URL; ?>users/register">Dodaj nowego uzytkownika</a></li>
-	            <li><a href="<?php echo ROOT_URL; ?>users/logout">Wyloguj</a></li>
+            <li><a href="<?php echo ROOT_URL; ?>users">Użytkownicy</a></li>
+	          <li><a href="<?php echo ROOT_URL; ?>">Witaj <?php echo $_SESSION['user_data']['login']; ?></a></li>
+	          <li><a href="<?php echo ROOT_URL; ?>logout">Wyloguj</a></li>
           </ul>
             <?php else : ?>
             <ul class="nav navbar-nav">

@@ -1,8 +1,8 @@
+<?php if(!isset($_SESSION['is_logged_in'])) : header('Location: '.ROOT_URL); ?>
+<?php else : ?>
 <div>
-	<?php if(isset($_SESSION['is_logged_in'])) : ?>
 	<a class="btn btn-success btn-share" href="<?php echo ROOT_PATH; ?>visit/add">Dodaj wizytę</a>
 	<a class="btn btn-success btn-share pull-right" href="<?php echo ROOT_PATH; ?>visit/history">Historia wizyt</a>
-	<?php endif; ?>
 	<?php if($viewmodel == null) : ?>
 	<h2 class="text-center">Brak Aktualnych Wizyt</h2>
 	<?php else : ?>
@@ -43,6 +43,7 @@
 			<form method="post" action="<?php $_SERVER['PHP_SELF']; ?>visit/delete">
 				<input name="vcard" type="hidden" value="<?php echo $item['vcard_id'];?>">
 				<input name="number" type="hidden" value="<?php echo $item['nadmiar3'];?>">
+				<input name="name11" type="hidden" value="<?php echo $item['name11'];?>">
 				<input name="delete" type="hidden" value="<?php echo $item['id'];?>">
 				<button class="btn-danger btn col-xs-2 col-xs-offset-5" value="Submit" name="submit" type="submit">Zakończ wizytę</button>
 			</form>
@@ -50,3 +51,4 @@
 	</div>
 	<?php endforeach; ?>
 </div>
+<?php endif; ?>

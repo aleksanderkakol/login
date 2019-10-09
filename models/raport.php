@@ -19,7 +19,9 @@ class RaportModel extends Model{
 			($post['raport_doorname'] === '') ?  $raport_doorname = '%': $raport_doorname = '%'.$post['raport_doorname'].'%';
 
 			if($post['event']==='hours'){
-				$this->query("SELECT user_name AS imie_nazwisko, enter_time AS godzina_wejscia, REPLACE((SELECT 'Budynek')::text || ' ' || REPLACE(door_name,'/',' drzwi '), 'Budynek Bramka', 'Bramka') AS drzwi_wejscia, exit_time AS godzina_wyjscia, REPLACE((SELECT 'Budynek')::text || ' ' || REPLACE(exit_door,'/',' drzwi '), 'Budynek Bramka', 'Bramka') AS drzwi_wyjscia, work_time AS liczba_godzin FROM zewng.user_in_out WHERE user_name ilike '$raport_username' AND door_name ilike '$raport_doorname' AND enter_time >= :start and enter_time <= :end ORDER BY user_name");
+				$this->query("SELECT user_name AS imie_nazwisko, enter_time AS godzina_wejscia, REPLACE((SELECT 'Budynek')::text || ' ' || REPLACE(door_name,'/',' drzwi '), 'Budynek Bramka', 'Bramka') AS drzwi_wejscia, exit_time AS godzina_wyjscia, REPLACE((SELECT 'Budynek')::text || ' ' || REPLACE(exit_door,'/',' drzwi '), 'Budynek Bramka', 'Bramka') AS drzwi_wyjscia, work_time AS liczba_godzin FROM zewng.user_in_out WHERE user_name ilike '$raport_username' AND door_name ilike '$raport_doorname' AND enter_time >= :start and enter_time <= :end ORDER BY user_name");	
+			}else if ($post['event']==='alarms'){
+				$this->query("SELECT evt_salto_ts AS data, evt_salto_user_name AS uzytkownik, evd.evd_dsc AS zdarzenie, REPLACE((SELECT 'Budynek')::text || ' ' || REPLACE(evt_salto_door_name,'/',' drzwi '), 'Budynek Bramka', 'Bramka') AS drzwi, evt_ack.ack_cmt AS komentarz FROM zewng.evt JOIN zewng.evt_ack ON evt_id = ack_evt_id JOIN zewng.evd ON evt.evt_evd_id = evd.evd_id WHERE evt_salto_user_name ilike '$raport_username' AND evt_salto_door_name ilike '$raport_doorname' AND evt_evd_id IN (select evd_id from zewng.evd WHERE evd_isalarm IS $event) AND evt_date >= :start AND evt_date <= :end ORDER BY evt_salto_ts");
 			}else{
 				$this->query("SELECT evt_salto_ts AS data, evt_salto_user_name AS uzytkownik, evd.evd_dsc AS zdarzenie, REPLACE((SELECT 'Budynek')::text || ' ' || REPLACE(evt_salto_door_name,'/',' drzwi '), 'Budynek Bramka', 'Bramka') AS drzwi FROM zewng.evt JOIN zewng.evd ON evt.evt_evd_id = evd.evd_id WHERE evt_salto_user_name ilike '$raport_username' AND evt_salto_door_name ilike '$raport_doorname' AND evt_evd_id IN (select evd_id from zewng.evd WHERE evd_isalarm IS $event) AND evt_date >= :start AND evt_date <= :end ORDER BY evt_salto_ts");
 			}
@@ -27,7 +29,6 @@ class RaportModel extends Model{
 			
 			$this->bind(':start', $post['start']);
 			$this->bind(':end', $post['end']);
-
 			$rows = $this->resultSet();
 			return $rows;
 		}

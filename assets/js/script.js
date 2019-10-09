@@ -181,5 +181,5 @@ function getUsers() {
         error: function(e, n, t) {
             console.log(e), console.log(n), console.log(t);
         }
-    })
+    });
 }

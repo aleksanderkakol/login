@@ -1,6 +1,6 @@
 <?php if(!isset($_SESSION['is_logged_in'])) : header('Location: '.ROOT_URL); ?>
 <?php else : ?>
-<?php 
+<?php
 $teams = array(
 	"DN" => "Prezes Zarządu", 
 	"DT" => "Członek Zarządu ds. Technicznych", 

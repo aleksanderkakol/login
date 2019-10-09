@@ -44,7 +44,6 @@
         </form>
   </div>
 </div>
-<?php endif; ?>
 <script>
 window.addEventListener('DOMContentLoaded', (event) => {
 	$(document).ready(function() {
@@ -64,3 +63,4 @@ window.addEventListener('DOMContentLoaded', (event) => {
 });
 });
 </script>
+<?php endif; ?>

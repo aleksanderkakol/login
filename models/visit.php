@@ -28,7 +28,7 @@ class VisitModel extends Model{
 				return;
 			}
 			// Insert into SQL
-			$this->query('INSERT INTO visit(vcard_id, name11, name21, doctype_id, doc_num, nadmiar1, nadmiar2, nadmiar3, ts1, status) VALUES(:vcard_id, :name11, :name21, :doctype_id, :doc_num, :nadmiar1, :nadmiar2, :nadmiar3, current_timestamp, 1)');
+			$this->query('INSERT INTO visit(vcard_id, name11, name21, doctype_id, doc_num, nadmiar1, nadmiar2, nadmiar3, ts1, status, to_employee) VALUES(:vcard_id, :name11, :name21, :doctype_id, :doc_num, :nadmiar1, :nadmiar2, :nadmiar3, current_timestamp, 1, :to_employee)');
 			$this->bind(':vcard_id', $post['vcard_id']);
 			$this->bind(':name11', $post['name11']);
 			$this->bind(':name21', $post['name21']);
@@ -37,6 +37,7 @@ class VisitModel extends Model{
 			$this->bind(':nadmiar1', $post['nadmiar1']);
 			$this->bind(':nadmiar2', $post['nadmiar2']);
 			$this->bind(':nadmiar3', $post['nadmiar3']);
+			$this->bind(':to_employee', $post['to_employee']);
 			$this->execute();
 			$this->query('INSERT INTO zewng.evt(evt_pnl_id,evt_evd_id,evt_d1,evt_salto_ts,evt_salto_is_exit, evt_salto_user_type, evt_salto_user_name, evt_salto_door_name) values(1,3000,:nadmiarevt,current_timestamp,false, 1, :guest1, :quantity1)');
 			$this->bind(':nadmiarevt', $post['nadmiar3']);
@@ -72,6 +73,11 @@ class VisitModel extends Model{
 		$this->execute();
 		$this->query('UPDATE visit SET status = 0, ts2 = current_timestamp WHERE id = :id');
 		$this->bind(':id', $post['delete']);
+		$this->execute();
+		$this->query("DELETE FROM zewng.peoplecnt WHERE user_name = :name11 OR user_name = :vcard_id AND quantity = :quantity");
+		$this->bind(':name11', $post['name11']);
+		$this->bind(':vcard_id', $post['vcard'].' GOSC');
+		$this->bind(':quantity', $post['number']);
 		$this->execute();
 		header('Location: '.ROOT_URL.'visit');
 		return;

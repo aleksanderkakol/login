@@ -2,6 +2,26 @@ html {
     overflow-y: scroll;
 }
 
+.modal-open {
+    padding-right: 0px !important;
+}
+
+.opr_level_input {
+    width: 15%;
+    padding: 1px;
+    display: inline-block;
+}
+
+.progress {
+    width: 83%;
+    display: inline-block;
+    margin-bottom: 0;
+}
+
+.progress_bar_tbody {
+    white-space: nowrap;
+}
+
 .ajax {
     height: 100%;
 }
