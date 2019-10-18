@@ -51,4 +51,15 @@
 	</div>
 	<?php endforeach; ?>
 </div>
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+	$(document).ready(function() {
+		$('.panel-heading').click(function(e){
+			var $this = $(this).parent().find('.panel-body');
+			$this.slideToggle(300);
+		})
+    
+	});
+});
+</script>
 <?php endif; ?>

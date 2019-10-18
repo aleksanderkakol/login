@@ -8,7 +8,7 @@
   <form class="form_add_visit" action="<?php $_SERVER['PHP_SELF']; ?>raport/download" method="post">
   	<div class="form-group">
 	  <label>Imię i Nazwisko</label>
-	  <input autocomplete="off" id="raport_username" type="text" oninput="peopleSuggests();" name="raport_username" placeholder="Nazwa" class="form-control">
+	  <input autocomplete="off" id="raport_username" type="text" oninput="peopleSuggests('#raport_username');" name="raport_username" placeholder="Nazwa" class="form-control">
 	</div>
 	<div class="form-group">
 		<label>Nazwa przejścia/drzwi</label>

@@ -4,7 +4,8 @@ abstract class Model{
 	protected $stmt;
 
 	public function __construct(){
-		$this->dbh = new PDO("pgsql:host=".DB_HOST.";port=".DB_PORT.";dbname=".DB_NAME, DB_USER, DB_PASS);
+		global $ip;
+		$this->dbh = new PDO("pgsql:host=".$ip.";port=".DB_PORT.";dbname=".DB_NAME, DB_USER, DB_PASS);
 	}
 
 	public function query($query){
@@ -33,20 +34,54 @@ abstract class Model{
 
 	public function execute(){
 		$this->stmt->execute();
+		$error = $this->stmt->errorInfo();
+		$errorInfo = strstr($error[2], 'LINE', true);
+		if($error[2]) {
+			Messages::setMsg($errorInfo, 'error');
+		}
 	}
 
 	public function resultSet(){
 		$this->execute();
+		$error = $this->stmt->errorInfo();
+		$errorInfo = strstr($error[2], 'LINE', true);
+		if($error[2]) {
+			Messages::setMsg($errorInfo, 'error');
+		}
 		return $this->stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
 
 	public function lastInsertId(){
+		$error = $this->stmt->errorInfo();
+		$errorInfo = strstr($error[2], 'LINE', true);
+		if($error[2]) {
+			Messages::setMsg($errorInfo, 'error');
+		}
 		return $this->dbh->lastInsertId();
 	}
 
 	public function single(){
 		$this->execute();
+		$error = $this->stmt->errorInfo();
+		$errorInfo = strstr($error[2], 'LINE', true);
+		if($error[2]) {
+			Messages::setMsg($errorInfo, 'error');
+		}
 		return $this->stmt->fetch(PDO::FETCH_ASSOC);
+	}
+
+	public function rowCount() {
+		$this->execute();
+		$error = $this->stmt->errorInfo();
+		$errorInfo = strstr($error[2], 'LINE', true);
+		if($error[2]) {
+			Messages::setMsg($errorInfo, 'error');
+		}
+		return $this->stmt->rowCount();
+	}
+
+	public function __destruct(){
+		$this->dbh = null;
 	}
 
 }

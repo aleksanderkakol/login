@@ -57,6 +57,6 @@ window.addEventListener('DOMContentLoaded', (event) => {
 			$this.slideToggle(300);
 		})
     
-});
+	});
 });
 </script>

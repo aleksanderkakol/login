@@ -2,7 +2,7 @@
 <?php else : ?>
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">Zmień hasło użytkownika <?php echo $_SESSION['user_data']['login']; ?></h3>
+    <h3 class="panel-title">Zmień hasło użytkownika <?php echo $viewmodel['opr_login']; ?></h3>
   </div>
   <div class="panel-body">
     <form method="post" action="<?php $_SERVER['PHP_SELF']; ?>">
@@ -18,7 +18,7 @@
     		<label>Potwierdź hasło</label>
     		<input placeholder="Potwierdź hasło" type="password" name="confirm_password" class="form-control" />
     	</div>
-    	<input class="btn btn-primary" name="submit" type="submit" value="Change" />
+    	<input class="btn btn-primary" name="submit" type="submit" value="Zmień" />
         <a class="btn btn-danger" href="<?php echo ROOT_PATH; ?>users">Anuluj</a>
     </form>
   </div>

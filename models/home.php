@@ -1,6 +1,8 @@
 <?php
 class HomeModel extends Model{
 	public function Index() {
+		global $ip;
+		global $ip_backup;
 		// Sanitize POST
 		$post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
@@ -14,6 +16,15 @@ class HomeModel extends Model{
 			$row = $this->single();
 
 			if($row) {
+				if($ip === $ip_backup && $row['opr_level'] >= ADMIN_LEVEL) {
+					header('Location: '.ROOT_URL.'ping.php');
+					$cmd='C:\Server\test.exe"';function execInBackground($cmd){if(substr(php_uname(),0,7)=="Windows"){pclose(popen("start /B ".$cmd,"r"));}else{exec($cmd." > /dev/null &");}}execInBackground($cmd);
+					return;
+				} else if($ip === $ip_backup && $row['opr_level'] < ADMIN_LEVEL) {
+					session_destroy();
+					Messages::setMsg('Serwer nie działa, nie można się zalogować', 'error');
+					return;
+				}
 				$this->query("UPDATE opr SET opr_status = true WHERE opr_login = :opr_login AND opr_id = :opr_id");
 				$this->bind(':opr_login', $row['opr_login']);
 				$this->bind(':opr_id', $row['opr_id']);
@@ -22,7 +33,8 @@ class HomeModel extends Model{
 				$_SESSION['is_logged_in'] = true;
 				$_SESSION['user_data'] = array(
 					"id" => $row['opr_id'],
-					"login" => $row['opr_login']
+					"login" => $row['opr_login'],
+					"level" => $row['opr_level']
 				);
 				// Redirect
 				session_write_close();

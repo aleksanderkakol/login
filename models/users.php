@@ -1,33 +1,32 @@
 <?php
 class UserModel extends Model{
 	public function Index(){
-		$this->query('SELECT * FROM opr ORDER BY opr_level');
+		$this->query("SELECT * FROM opr WHERE opr_isdel = 'false' ORDER BY opr_id");
 		$rows = $this->resultSet();
 		return $rows;
 	}
-
 	public function level(){
 		$post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 		$this->query('UPDATE opr SET opr_level = :opr_level WHERE opr_id = :opr_id');
 		$this->bind(':opr_id', $post['opr_id']);
 		$this->bind(':opr_level', $post['opr_level']);
 		$result = $this->execute();
+		$_SESSION['user_data']['level'] = $post['opr_level'];
 		print_r(json_encode($result));
 		return;
 	}
 
 	public function password(){
-		$opr_id = $_SESSION['user_data']['id'];
-		$opr_login = $_SESSION['user_data']['login'];
+		$opr_id = $_GET['id'];
+		$this->query("SELECT * FROM zewng.opr WHERE opr_id = :opr_id");
+		$this->bind(':opr_id', $opr_id);
+		$result = $this->single();
+		$old_password = $result['opr_pwd'];
 		$post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-		$password = md5($post['opr_password']);
-		$new_password = md5($post['new_password']);
-		$confirm_password = md5($post['confirm_password']);
 		if($post['submit']){
-			$this->query("SELECT * FROM zewng.opr WHERE opr_id = :opr_id AND opr_login = '$opr_login'");
-			$this->bind(':opr_id', $opr_id);
-			$result = $this->single();
-			$old_password = $result['opr_pwd'];
+			$password = md5($post['opr_password']);
+			$new_password = md5($post['new_password']);
+			$confirm_password = md5($post['confirm_password']);
 			if($post['opr_password'] == '' || $post['new_password'] == '' || $post['confirm_password'] == ''){
 				Messages::setMsg('Proszę wypełnić wszystkie pola', 'error');
 				return;
@@ -38,21 +37,23 @@ class UserModel extends Model{
 				Messages::setMsg('Hasło jest nie prawidłowe', 'error');
 				return;
 			} else if($post['opr_password'] && $post['new_password'] && $post['confirm_password'] && $password == $old_password && $new_password == $confirm_password){
-				Messages::setMsg('Hasło użytkownika '.$_SESSION['user_data']['login'].' zostało zmienione', 'success');			
-			} else {
-				Messages::setMsg('Błąd', 'error');
-				return;
+				$this->query("UPDATE zewng.opr SET opr_pwd = :opr_pwd WHERE opr_id = :opr_id");
+				$this->bind(':opr_pwd', $new_password);
+				$this->bind(':opr_id', $opr_id);
+				$this->rowCount();
+				if($this->rowCount()){
+					Messages::setMsg('Hasło użytkownika '.$result['opr_login'].' zostało zmienione', 'success');
+					if($result['opr_login']==$_SESSION['user_data']['login']) {
+						header('Location: '.ROOT_URL.'logout');
+					} 
+				}
 			}
-			$this->query("UPDATE zewng.opr SET opr_pwd = :opr_pwd WHERE opr_id = :opr_id AND opr_login = :opr_login");
-			$this->bind(':opr_pwd', $new_password);
-			$this->bind(':opr_id', $opr_id);
-			$this->bind(':opr_login', $opr_login);
-			$this->execute();
-			header('Location: '.ROOT_URL.'logout');
 		}
+		return $result;
 	}
 
 	public function register(){
+		if(!isset($_SESSION['user_data']['level']) || $_SESSION['user_data']['level'] < ADMIN_LEVEL){return header('Location: '.ROOT_URL);}
 		// Sanitize POST
 		$post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 		$password = md5($post['opr_password']);
@@ -64,8 +65,6 @@ class UserModel extends Model{
 			} else if($post['opr_password'] != $post['confirm_password']){
 				Messages::setMsg('Hasła nie są identyczne', 'error');
 				return;
-			}else {
-				Messages::setMsg('Dodano nowego użytkownika', 'success');
 			}
 			// Insert into SQL
 			$this->query('INSERT INTO opr(opr_login, opr_pwd, opr_level) VALUES(:name, :password, :level)');
@@ -75,17 +74,20 @@ class UserModel extends Model{
 			$this->execute();
 			// Verify
 			if($this->lastInsertId()){
-				// header('Location: '.ROOT_URL.'users');
+				Messages::setMsg('Dodano nowego użytkownika', 'success');
 			}
 		}
 		return;
 	}
 	public function delete(){
+		if($_SESSION['user_data']['level'] < ADMIN_LEVEL){return header('Location: '.ROOT_URL);}
 		$post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-		Messages::setMsg('Użytkownik '.$post['opr_login'].' został usunięty', 'success');
-		$this->query("DELETE FROM zewng.opr WHERE opr_id = :opr_id");
+		$this->query("UPDATE zewng.opr SET opr_isdel = true WHERE opr_id = :opr_id");
 		$this->bind(':opr_id', $post['yes']);
-		$this->execute();
+		$this->rowCount();
+		if($this->rowCount()){
+			Messages::setMsg('Użytkownik '.$post['opr_login'].' został usunięty', 'success');
+		}
 		header('Location: '.ROOT_URL.'users');
 		return;
 	}

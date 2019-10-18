@@ -5,16 +5,22 @@
     <h3 class="panel-title">Logowanie</h3>
   </div>
   <div class="panel-body">
-    <form method="post" action="<?php $_SERVER['PHP_SELF']; ?>">
-    	<div class="form-group">
-    		<label>Name</label>
+	<form method="post" action="<?php $_SERVER['PHP_SELF']; ?>">
+	<label>Login
+		<div class="input-group">
+			<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
     		<input type="text" name="opr_name" class="form-control" autocomplete="username" placeholder="Login" />
-    	</div>
-    	<div class="form-group">
-    		<label>Password</label>
-    		<input type="password" name="opr_password" class="form-control" autocomplete="current-password" placeholder="Hasło"/>
-    	</div>
-    	<input class="btn btn-primary" name="submit" type="submit" value="Login" />
+		</div>
+	</label>
+	<label>Hasło
+    	<div class="input-group">
+			<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+			<input type="password" name="opr_password" class="form-control" autocomplete="current-password" placeholder="Hasło"/>
+		</div>
+	</label>
+	<div class="input-control">
+		<input class="btn btn-primary" name="submit" type="submit" value="Zaloguj" />
+	</div>
     </form>
   </div>
 </div>

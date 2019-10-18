@@ -1,8 +1,8 @@
-<?php if(!isset($_SESSION['is_logged_in'])) : header('Location: '.ROOT_URL); ?>
+<?php if(!isset($_SESSION['is_logged_in']) || $_SESSION['user_data']['level'] < ADMIN_LEVEL) : header('Location: '.ROOT_URL); ?>
 <?php else : ?>
 <div>
 	<a class="btn btn-success btn-share" href="<?php echo ROOT_PATH; ?>users/register">Dodaj użytkownika</a>
-	<a class="btn btn-success btn-share pull-right" href="<?php echo ROOT_PATH; ?>users/password">Zmień hasło</a>
+	<a style="display:block;" class="btn btn-success btn-share pull-right" href="<?php echo ROOT_PATH; ?>users/password?id=<?php echo $_SESSION['user_data']['id'];?>">Zmień hasło</a>
 <div class="panel panel-default">
 	<table class="table table-hover">
 		<thead>
@@ -10,7 +10,7 @@
 				<th>Login</th>
 				<th class='text-center'>Poziom uprawnień</th>
 				<th class='text-center'>Status</th>
-				<th class='text-center'>Usuń</th>
+				<th class='text-center'>Opcje</th>
 			</tr>
 		</thead>
 		<tbody class='progress_bar_tbody'>
@@ -31,6 +31,7 @@
 						<?php echo $status; ?>
 					</td>
 					<td class='text-center'>
+        					<a href="<?php echo ROOT_PATH; ?>users/password?id=<?php echo $item['opr_id'];?>" class="btn btn-primary" value="<?php echo $item['opr_id'];?>" >Zmień hasło</a>
 							<button class="btn btn-danger" type="button" data-toggle="modal" data-target=".button_<?php echo $item['opr_login'];?>" name="delete" value="delete" >Usuń</button>
 							<div class="button_<?php echo $item['opr_login'];?> modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
  								<div class="modal-dialog modal-lg">
@@ -57,7 +58,9 @@
 </div>
 <script>
 window.addEventListener('DOMContentLoaded', (event) => {
+	let timerId;
 	$(".opr_level_input").bind("keyup change", function(){
+		clearTimeout(timerId);
 		let level = this.value;
 		let opr_id = $(this).attr('opr_id');
 		const progress_bar = $(this).parent().parent().find('.progress-bar');
@@ -65,23 +68,26 @@ window.addEventListener('DOMContentLoaded', (event) => {
 		progress_bar.attr('aria-valuenow', level);
 		progress_bar.css('width', level+'%');
 		progress_bar.text(level);
-		$.ajax({
-        type: "post",
-        url: "/www/users/level",
-        dataType: "json",
-        data: {
-			opr_id: opr_id,
-			opr_level: level
-        },
-        success: function(e, n) {
-			console.log(n);
-		},
-        error: function(e, n, t) {
-            console.log(e), console.log(n), console.log(t);
-        },
-        complete: function(o, e) {}
-	});
-	
+		
+		timerId = setTimeout(() =>{
+			$.ajax({
+        	type: "post",
+        	url: "/www/users/level",
+        	dataType: "json",
+        	data: {
+				opr_id: opr_id,
+				opr_level: level
+        	},
+        	success: function(e, n) {
+				console.log(n);
+			},
+        	error: function(e, n, t) {
+            	console.log(e), console.log(n), console.log(t);
+        	},
+        	complete: function(o, e) {
+			}
+			});
+		}, 500);
 	});
 });
 </script>

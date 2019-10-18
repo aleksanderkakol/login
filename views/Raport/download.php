@@ -40,17 +40,18 @@ if (strpos($doorname, '/') == true) {
 	$doorname = str_replace('/', '_', $doorname);
 }
 
-
-$filename = 'raporty\Raport '.$event.' dla '.$username.' i '.$doorname.' '.$start.' '.$end.'.csv';
-$_SESSION['filename'] = $filename;
-$head = fopen($filename, 'w');
-$headers = $viewmodel;
-fputcsv($head, array_keys($headers['0']));
-fclose($head);
-$data = fopen($filename, 'a');
-foreach($viewmodel as $item) {
+if($viewmodel){
+	$filename = 'raporty\Raport '.$event.' dla '.$username.' i '.$doorname.' '.$start.' '.$end.'.csv';
+	$_SESSION['filename'] = $filename;
+	$head = fopen($filename, 'w');
+	$headers = $viewmodel;
+	fputcsv($head, array_keys($headers['0']));
+	fclose($head);
+	$data = fopen($filename, 'a');
+	foreach($viewmodel as $item) {
 		fputcsv($data, $item, ';');
+	}
+	fclose($data);
 }
-fclose($data);
 header('Location: '.ROOT_URL.'raport');
 ?>

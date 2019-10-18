@@ -1,6 +1,7 @@
 function getPeopleNumber() {
     $.ajax({
         type: "post",
+        timeout: 4000,
         url: "/www/home/count",
         dataType: "json",
         success: function(e, n) {
@@ -8,6 +9,9 @@ function getPeopleNumber() {
             navbar_brand.textContent = 'Liczba osób: ' + e;
         },
         error: function(e, n, t) {
+            if (n === "timeout") {
+                location.reload();
+            }
             console.log(e), console.log(n), console.log(t);
             let navbar_brand = document.querySelector('.navbar-brand');
             navbar_brand.textContent = 'Odśwież stronę!';
@@ -60,13 +64,15 @@ zewng.addEventListener('click', function(e) {
     openExe();
 });
 
-function peopleSuggests() {
+function peopleSuggests(input) {
     $.ajax({
         type: "post",
-        url: "/www/raport/people",
+        url: "/www/visit/people",
         dataType: "json",
         success: function(e, n) {
-            $("#raport_username").autocomplete({
+            $('.ui-helper-hidden-accessible').remove();
+            $(input).autocomplete({
+                maxShowItems: 10,
                 source: e
             });
         },
@@ -95,56 +101,7 @@ function doorSuggests() {
 }
 
 function getUsers() {
-    let teamarray = [
-        "DN",
-        "DT",
-        "DE",
-        "DF",
-        "DP",
-        "DG",
-        "DR",
-        "EU",
-        "ED",
-        "EM",
-        "EB",
-        "EO",
-        "EG",
-        "FK",
-        "IR",
-        "II",
-        "LB",
-        "LP",
-        "ME",
-        "MA",
-        "MM",
-        "MT",
-        "MB",
-        "MI",
-        "NK",
-        "NI",
-        "NA",
-        "NB",
-        "NZ",
-        "NS",
-        "ND",
-        "NO",
-        "NR",
-        "OE",
-        "OZ",
-        "OA",
-        "OR",
-        "OS",
-        "OM",
-        "OG",
-        "PE",
-        "PT",
-        "PS",
-        "TL",
-        "TM",
-        "TR",
-        "TI"
-    ]
-    const divs = document.querySelectorAll(".ajax");
+    const teamarray = ["DN", "DT", "DE", "DF", "DP", "DG", "DR", "EU", "ED", "EM", "EB", "EO", "EG", "FK", "IR", "II", "LB", "LP", "ME", "MA", "MM", "MT", "MB", "MI", "NK", "NI", "NA", "NB", "NZ", "NS", "ND", "NO", "NR", "OE", "OZ", "OA", "OR", "OS", "OM", "OG", "PE", "PT", "PS", "TL", "TM", "TR", "TI"]
     $.ajax({
         type: "post",
         url: "/www/login/getUsers",
@@ -159,6 +116,7 @@ function getUsers() {
                 }
                 return { quantity: item.quantity, name: item.user_name };
             });
+            //employees
             for (let i = 0; i < teamarray.length; i++) {
                 let arrayfiltered = arraymap.filter(function(item) {
                     return item.name.indexOf(`[${teamarray[i]}]`) > -1;
@@ -167,8 +125,13 @@ function getUsers() {
                 for (let j = 0; j < arrayfiltered.length; j++) {
                     total = total + arrayfiltered[j].quantity
                 }
-                $(`<p><strong>Liczba osób ${total}</strong></p>`).appendTo($(`.${teamarray[i]}`).parent().parent().parent().find('.panel-heading'));
+                if (total === 0) {
+                    $(`.${teamarray[i]}`).parent().parent().parent().css('display', 'none');
+                } else {
+                    $(`<p><strong>Liczba osób ${total}</strong></p>`).appendTo($(`.${teamarray[i]}`).parent().parent().parent().find('.panel-heading'));
+                }
             }
+            // guests and others
             let othersfiltered = arraymap.filter(function(item) {
                 return item.name.indexOf(`[`) === -1;
             })

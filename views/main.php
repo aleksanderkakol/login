@@ -22,11 +22,12 @@
           <a class="navbar-brand" href="<?php echo ROOT_URL; ?>">Liczba osób: ......</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
-					<?php if(isset($_SESSION['is_logged_in'])) : ?>
+					<?php if(isset($_SESSION['is_logged_in']) && $_SESSION['user_data']['level'] >= ADMIN_LEVEL) : ?>
           <ul class="nav navbar-nav">
             <li><a id="zewng" href="">Wizualizacja KD</a></li>
             <li><a href="<?php echo SALTO_URL; ?>" target="blank">Zarządzanie KD</a></li>
             <li><a href="<?php echo ROOT_URL; ?>visit">Obsługa gości</a></li>
+            <li><a href="<?php echo ROOT_URL; ?>camera">Kamery</a></li>
             <li><a href="<?php echo ROOT_URL; ?>raport">Raporty</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
@@ -34,21 +35,34 @@
 	          <li><a href="<?php echo ROOT_URL; ?>">Witaj <?php echo $_SESSION['user_data']['login']; ?></a></li>
 	          <li><a href="<?php echo ROOT_URL; ?>logout">Wyloguj</a></li>
           </ul>
+          <?php elseif(isset($_SESSION['is_logged_in']) && $_SESSION['user_data']['level'] < ADMIN_LEVEL) : ?>
+          <ul class="nav navbar-nav">
+            <li><a id="zewng" href="">Wizualizacja KD</a></li>
+            <li><a href="<?php echo ROOT_URL; ?>visit">Obsługa gości</a></li>
+            <li><a href="<?php echo ROOT_URL; ?>camera">Kamery</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+	          <li><a href="<?php echo ROOT_URL; ?>">Witaj <?php echo $_SESSION['user_data']['login']; ?></a></li>
+	          <li><a href="<?php echo ROOT_URL; ?>logout">Wyloguj</a></li>
+          </ul>
             <?php else : ?>
             <ul class="nav navbar-nav">
               <li><a id="zewng" href="">Wizualizacja KD</a></li>
-              <li><a href="<?php echo SALTO_URL; ?>" target="blank">Zarządzanie KD</a></li>
             </ul>
 						<?php endif; ?>
         </div>
       </div>
     </nav>
 
-    <div class="container">
+    <div class="content container">
      <div class="row">
 			 <?php Messages::display(); ?>
      	<?php require($view); ?>
      </div>
+    </div>
+    <div class="footer-nav">
+      <img src="<?php echo ROOT_PATH; ?>logo.png" alt="ostoya.net" style="width:100px;height:33px;">
+      <div class="ostoya">Ostoya © Wszystkie prawa zastrzeżone</div>
     </div>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>assets/js/jquery-3.4.1.min.js"></script>
     <script type="text/javascript" src="<?php echo ROOT_PATH; ?>assets/js/jquery-ui.min.js"></script>

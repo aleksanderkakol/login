@@ -18,6 +18,12 @@ class Visit extends Controller{
 		$this->returnView($viewmodel->history(), true);
 	}
 
+	protected function people(){
+		if(!isset($_SESSION['user_data']['level']) || $_SESSION['user_data']['level'] < ADMIN_LEVEL){return http_response_code(403);}
+		$viewmodel = new VisitModel();
+		$this->returnView($viewmodel->people(), false);
+	}
+
 	protected function option(){
 		$viewmodel = new VisitModel();
 		$this->returnView($viewmodel->getUnUsedVisitorCards(), false);

@@ -1,7 +1,6 @@
 Options +FollowSymLinks
 RewriteEngine on
-RewriteRule ^([a-zA-Z]*)/?([a-zA-Z]*)?/?([a-zA-Z0-9]*)?/?$ index.php?controller=$1&action=$2&id=$3 [NC,L]
-
+RewriteRule ^([a-zA-Z]*)/?([a-zA-Z]*)?/?([a-zA-Z0-9]*)?/?$ index.php?controller=$1&action=$2&id=$3 [QSA,NC,L]
 
 # compress text, html, javascript, css, xml:
 AddOutputFilterByType DEFLATE text/plain
@@ -60,7 +59,7 @@ ExpiresDefault "access 1 month"
     <filesmatch "\.(jpg|jpeg|png)$">
         Header set Cache-Control "max-age=1209600, public"
     </filesmatch>
-    # css and js should use private for proxy caching https://developers.google.com/speed/docs/best-practices/caching#LeverageProxyCaching
+    # css and js should use private for proxy caching
     <filesmatch "\.(css)$">
         Header set Cache-Control "max-age=31536000, private"
     </filesmatch>

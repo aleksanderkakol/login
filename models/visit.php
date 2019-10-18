@@ -23,8 +23,13 @@ class VisitModel extends Model{
 		// Sanitize POST
 		$post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 		if($post['submit']){
+			if($post['to_employee']=='true'){
+				$post['name21'] = $post['name11'];
+				$post['nadmiar1'] = 'GOS';
+				$post['nadmiar3'] = 1;
+			}
 			if($post['vcard_id'] == '' || $post['name11'] == '' || $post['name21'] == '' || $post['doctype_id'] == '' || $post['doc_num'] == '' || $post['nadmiar1'] == '' || $post['nadmiar3'] == ''){
-				Messages::setMsg('Please Fill In All Fields', 'error');
+				Messages::setMsg('Proszę wypełnić wszystkie pola', 'error');
 				return;
 			}
 			// Insert into SQL
@@ -47,10 +52,20 @@ class VisitModel extends Model{
 			// Verify
 			if($this->lastInsertId()){
 				// Redirect
-				header('Location: '.ROOT_URL.'visit');
+				Messages::setMsg('Wizyta dodana pomyślnie', 'success');
 			}
 		}
 		return;
+	}
+
+	public function people() {
+		$this->query("SELECT DISTINCT evt_salto_user_name FROM zewng.evt WHERE evt_salto_user_type = 0 AND evt_salto_ts >= '2019-09-04' AND evt_salto_user_name != '' AND evt_salto_user_name ILIKE '%[%]%' ORDER BY evt_salto_user_name");
+		$rows = $this->resultSet();
+		$result=array();
+		foreach($rows as $key => $value) {
+  			array_push($result,$value['evt_salto_user_name']);
+		}
+		return print_r(json_encode($result));
 	}
 
 	public function history(){
@@ -79,6 +94,9 @@ class VisitModel extends Model{
 		$this->bind(':vcard_id', $post['vcard'].' GOSC');
 		$this->bind(':quantity', $post['number']);
 		$this->execute();
+		if($this->lastInsertId()){
+			Messages::setMsg('Wizyta zakończona', 'success');
+		}
 		header('Location: '.ROOT_URL.'visit');
 		return;
 	}
