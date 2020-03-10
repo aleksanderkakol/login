@@ -1,10 +1,8 @@
 <?php
 class Ajax extends Controller{
 	protected function Index(){
-		if(isset($_SESSION['is_logged_in'])){return header('Location: '.ROOT_URL.'login');}
-		// $viewmodel = new HomeModel();
-        // $this->returnView($viewmodel->Index(), true);
-        $this->executeAction();
+        if(!isset($_SESSION['is_logged_in'])){return http_response_code(403);}
+	return;
 	}
 	
 	protected function lista(){
