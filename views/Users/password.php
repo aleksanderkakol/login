@@ -1,15 +1,9 @@
-<?php if(!isset($_SESSION['is_logged_in'])) : header('Location: '.ROOT_URL); ?>
-<?php else : ?>
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">Zmień hasło użytkownika <?php echo $viewmodel['opr_login']; ?></h3>
   </div>
   <div class="panel-body">
     <form method="post" action="<?php $_SERVER['PHP_SELF']; ?>">
-    	<div class="form-group">
-    		<label>Hasło</label>
-    		<input placeholder="Hasło" type="password" name="opr_password" class="form-control" />
-		</div>
 		<div class="form-group">
     		<label>Nowe hasło</label>
     		<input placeholder="Nowe hasło" type="password" name="new_password" class="form-control" />
@@ -23,4 +17,3 @@
     </form>
   </div>
 </div>
-<?php endif; ?>

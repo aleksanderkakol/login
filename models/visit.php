@@ -58,20 +58,27 @@ class VisitModel extends Model{
 		return;
 	}
 
-	public function people() {
-		$this->query("SELECT DISTINCT evt_salto_user_name FROM zewng.evt WHERE evt_salto_user_type = 0 AND evt_salto_ts >= '2019-09-04' AND evt_salto_user_name != '' AND evt_salto_user_name ILIKE '%[%]%' ORDER BY evt_salto_user_name");
-		$rows = $this->resultSet();
-		$result=array();
-		foreach($rows as $key => $value) {
-  			array_push($result,$value['evt_salto_user_name']);
-		}
-		return print_r(json_encode($result));
+	public function history() {
+		return;
 	}
 
-	public function history(){
-		$this->query('SELECT * FROM visit JOIN doctype ON visit.doctype_id = doctype.doctype_id WHERE status = 0 ORDER BY ts2 DESC');
+	public function date(){
+		function checkIsAValidDate($myDateString){
+			return (bool)strtotime($myDateString);
+		}
+
+		$post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+		if(!isset($post['date'])){
+			if(!checkIsAValidDate($post['date'])){
+				Messages::setMsg('Zły format daty', 'error');
+				return;
+			}
+			return;
+		}
+		$this->query('SELECT * FROM visit JOIN doctype ON visit.doctype_id = doctype.doctype_id WHERE status = 0  AND date(ts1) = :date ORDER BY ts1 DESC');
+		$this->bind(':date', $post['date']);
 		$rows = $this->resultSet();
-		return $rows;
+		return print_r(json_encode($rows));
 	}
 
 	public function delete(){

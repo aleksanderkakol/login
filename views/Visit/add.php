@@ -47,7 +47,7 @@
     	<input type="text" name="nadmiar2" placeholder="Dodatkowe informacje" class="form-control">
 	</div>
           <div class="btn_wrap">
-		  	<a class="btn btn-danger" href="<?php echo ROOT_PATH; ?>visit">Anuluj</a>
+		  	<a class="btn btn-danger" href="<?php echo ROOT_PATH; ?>visit">Cofnij</a>
             <input class="btn btn-primary" name="submit" type="submit" value="Dodaj wizytę" />
           </div>
         </form>
@@ -56,6 +56,29 @@
 
 <script>
 window.addEventListener('DOMContentLoaded', (event) => {
+	function getVisitorCards() {
+    $.ajax({
+        type: "post",
+        url: "/visit/option",
+        dataType: "json",
+        success: function(e, n) {
+            const doctype = document.getElementById('doctype');
+            const vcardOption = document.getElementById('card_id');
+            if (vcardOption && doctype) {
+                e.docname.map((e, n) => {
+                    $(`<option class='ajax_option' value=${e.doctype_id}>${e.doctype_name}</option>`).appendTo(doctype);
+                });
+                e.vcards.map((e, n) => {
+                    $(`<option class='ajax_option' value=${e.id}>${e.name}</option>`).appendTo(vcardOption);
+                });
+            }
+        },
+        error: function(e, n, t) {
+            console.log(e), console.log(n), console.log(t);
+        },
+        complete: function(o, e) {}
+    })
+}
 	getVisitorCards();
 	
     const input_element = $('#name11')[0];
@@ -72,7 +95,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 			$("<select id='select_name' class='form-control plate_user_name' name='name11'></select>").appendTo(parent_element);
 			$.ajax({
             	type: "post",
-            	url: "/www/visit/people",
+            	url: "/ajax/people",
 				dataType: "json",
 				success: function(e, t) {
 					e.map((person) => {

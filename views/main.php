@@ -4,69 +4,39 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Zew</title>
+  <title>Login</title>
   <link rel="shortcut icon" href="<?php echo ROOT_PATH; ?>favicon.ico" type="image/x-icon"/>
 	<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>assets/css/bootstrap.css">
 	<link rel="stylesheet" href="<?php echo ROOT_PATH; ?>assets/css/style.css">
 </head>
 <body>
-	<nav class="navbar navbar-default">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="<?php echo ROOT_URL; ?>">Liczba osób: ......</a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-					<?php if(isset($_SESSION['is_logged_in']) && $_SESSION['user_data']['level'] >= ADMIN_LEVEL) : ?>
-          <ul class="nav navbar-nav">
-            <li><a id="zewng" href="">Wizualizacja KD</a></li>
-            <li><a href="<?php echo SALTO_URL; ?>" target="blank">Zarządzanie KD</a></li>
-            <li><a href="<?php echo ROOT_URL; ?>visit">Obsługa gości</a></li>
-            <li><a href="<?php echo ROOT_URL; ?>camera">Kamery</a></li>
-            <li><a href="<?php echo ROOT_URL; ?>raport">Raporty</a></li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="<?php echo ROOT_URL; ?>users">Użytkownicy</a></li>
-	          <li><a href="<?php echo ROOT_URL; ?>">Witaj <?php echo $_SESSION['user_data']['login']; ?></a></li>
-	          <li><a href="<?php echo ROOT_URL; ?>logout">Wyloguj</a></li>
-          </ul>
-          <?php elseif(isset($_SESSION['is_logged_in']) && $_SESSION['user_data']['level'] < ADMIN_LEVEL) : ?>
-          <ul class="nav navbar-nav">
-            <li><a id="zewng" href="">Wizualizacja KD</a></li>
-            <li><a href="<?php echo ROOT_URL; ?>visit">Obsługa gości</a></li>
-            <li><a href="<?php echo ROOT_URL; ?>camera">Kamery</a></li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-	          <li><a href="<?php echo ROOT_URL; ?>">Witaj <?php echo $_SESSION['user_data']['login']; ?></a></li>
-	          <li><a href="<?php echo ROOT_URL; ?>logout">Wyloguj</a></li>
-          </ul>
-            <?php else : ?>
-            <ul class="nav navbar-nav">
-              <li><a id="zewng" href="">Wizualizacja KD</a></li>
-            </ul>
-						<?php endif; ?>
-        </div>
-      </div>
-    </nav>
-
-    <div class="content container">
-     <div class="row">
-			 <?php Messages::display(); ?>
-     	<?php require($view); ?>
-     </div>
+  <?php if(isset($_SESSION['is_logged_in']) && $_SESSION['user_data']['level'] >= ADMIN_LEVEL) : ?>
+    <?php require('nav/admin.php'); ?>
+  <?php elseif(isset($_SESSION['is_logged_in']) && $_SESSION['user_data']['level'] < ADMIN_LEVEL && $_SESSION['user_data']['level'] > DYSPOZYTOR) : ?>
+    <?php require('nav/user.php'); ?>
+  <?php elseif(isset($_SESSION['is_logged_in']) && $_SESSION['user_data']['level'] <= DYSPOZYTOR) : ?>
+    <?php require('nav/guest.php'); ?>
+  <?php else : ?>
+    <?php require('nav/basic.php'); ?>
+  <?php endif; ?>
+  <div class="content container">
+    <div class="row">
+      
+      <?php if(!strpos($_SERVER['REQUEST_URI'], 'login') && $_SERVER['REQUEST_URI']!=ROOT_PATH) :?>
+        <a style="margin-bottom:20px;" class="btn btn-info" href="<?php echo ROOT_URL;?>login"><i class="glyphicon glyphicon-home"></i> Strona główna</a>
+      <?php endif; ?>
+      <?php Messages::display(); ?>
+      <?php require($view); ?>
+      <?php unset($_SESSION['errorMsg']); ?>
     </div>
-    <div class="footer-nav">
-      <img src="<?php echo ROOT_PATH; ?>logo.png" alt="ostoya.net" style="width:100px;height:33px;">
-      <div class="ostoya">Ostoya © Wszystkie prawa zastrzeżone</div>
-    </div>
-    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>assets/js/jquery-3.4.1.min.js"></script>
-    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>assets/js/jquery-ui.min.js"></script>
-		<script type="text/javascript" src="<?php echo ROOT_PATH; ?>assets/js/bootstrap.js"></script>
-    <script type="text/javascript" src="<?php echo ROOT_PATH; ?>assets/js/script.js"></script>
+  </div>
+  <div class="footer-nav">
+    <img src="<?php echo ROOT_PATH; ?>logo.png" alt=logo.net" style="width:100px;height:33px;">
+    <div class="footer_logo">© Wszystkie prawa zastrzeżone</div>
+  </div>
+  <script type="text/javascript" src="<?php echo ROOT_PATH; ?>assets/js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript" src="<?php echo ROOT_PATH; ?>assets/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="<?php echo ROOT_PATH; ?>assets/js/bootstrap.js"></script>
+  <script type="text/javascript" src="<?php echo ROOT_PATH; ?>assets/js/script.js"></script>
 </body>
 </html>

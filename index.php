@@ -17,13 +17,6 @@ elseif(!ob_start("ob_gzhandler")) {
 session_start();
 require('config.php');
 
-require('ping.php');
-$ping = new Ping($ip);
-$latency = $ping->ping();
-if (!$latency) {
-    $ip = $ip_backup;
-}
-
 spl_autoload_register ( function ($class) {
     $sources = array("controllers/$class.php", "classes/$class.php",  "models/$class.php" );
         foreach ($sources as $source) {

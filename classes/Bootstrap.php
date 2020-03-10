@@ -28,17 +28,17 @@ class Bootstrap{
 					return new $this->controller($this->action, $this->request);
 				} else {
 					// Method Does Not Exist
-					echo '<h1>Method does not exist</h1>';
+					header('Location: '.ROOT_URL.NOT_FOUND_PATH);
 					return;
 				}
 			} else {
 				// Base Controller Does Not Exist
-				echo '<h1>Base controller not found</h1>';
+				header('Location: '.ROOT_URL.NOT_FOUND_PATH);
 				return;
 			}
 		} else {
 			// Controller Class Does Not Exist
-			echo '<h1>Controller class does not exist</h1>';
+			header('Location: '.ROOT_URL.NOT_FOUND_PATH);
 			return;
 		}
 	}

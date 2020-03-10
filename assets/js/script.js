@@ -1,20 +1,16 @@
 function getPeopleNumber() {
     $.ajax({
         type: "post",
-        timeout: 4000,
-        url: "/www/home/count",
+        url: "/ajax/count",
         dataType: "json",
         success: function(e, n) {
             let navbar_brand = document.querySelector('.navbar-brand');
             navbar_brand.textContent = 'Liczba osób: ' + e;
         },
         error: function(e, n, t) {
-            if (n === "timeout") {
-                location.reload();
-            }
             console.log(e), console.log(n), console.log(t);
             let navbar_brand = document.querySelector('.navbar-brand');
-            navbar_brand.textContent = 'Odśwież stronę!';
+            navbar_brand.textContent = 'Błąd połączenia z serwerem!';
         },
         complete: function(o, e) {}
     })
@@ -22,52 +18,10 @@ function getPeopleNumber() {
 getPeopleNumber();
 setInterval(getPeopleNumber, 1000 * 60);
 
-function getVisitorCards() {
-    $.ajax({
-        type: "post",
-        url: "/www/visit/option",
-        dataType: "json",
-        success: function(e, n) {
-            const doctype = document.getElementById('doctype');
-            const vcardOption = document.getElementById('card_id');
-            if (vcardOption && doctype) {
-                e.docname.map((e, n) => {
-                    $(`<option class='ajax_option' value=${e.doctype_id}>${e.doctype_name}</option>`).appendTo(doctype);
-                });
-                e.vcards.map((e, n) => {
-                    $(`<option class='ajax_option' value=${e.id}>${e.name}</option>`).appendTo(vcardOption);
-                });
-            }
-        },
-        error: function(e, n, t) {
-            console.log(e), console.log(n), console.log(t);
-        },
-        complete: function(o, e) {}
-    })
-}
-
-function openExe() {
-    $.ajax({
-        type: "post",
-        url: "/www/home/exe",
-        dataType: "json",
-        success: function(e, n) {},
-        error: function(e, n, t) {
-            console.log(e), console.log(n), console.log(t);
-        },
-        complete: function(o, e) {}
-    })
-}
-const zewng = document.getElementById('zewng');
-zewng.addEventListener('click', function(e) {
-    e.preventDefault();
-    openExe();
-});
-
 function peopleSuggests(input) {
     $.ajax({
         type: "post",
-        url: "/www/visit/people",
+        url: "/ajax/people",
         dataType: "json",
         success: function(e, n) {
             $('.ui-helper-hidden-accessible').remove();
@@ -83,13 +37,13 @@ function peopleSuggests(input) {
     })
 }
 
-function doorSuggests() {
+function doorSuggests(input) {
     $.ajax({
         type: "post",
-        url: "/www/raport/doors",
+        url: "/ajax/doors",
         dataType: "json",
         success: function(e, n) {
-            $("#raport_doorname").autocomplete({
+            $(input).autocomplete({
                 source: e
             });
         },
@@ -104,7 +58,7 @@ function getUsers() {
     const teamarray = ["DN", "DT", "DE", "DF", "DP", "DG", "DR", "EU", "ED", "EM", "EB", "EO", "EG", "FK", "IR", "II", "LB", "LP", "ME", "MA", "MM", "MT", "MB", "MI", "NK", "NI", "NA", "NB", "NZ", "NS", "ND", "NO", "NR", "OE", "OZ", "OA", "OR", "OS", "OM", "OG", "PE", "PT", "PS", "TL", "TM", "TR", "TI"]
     $.ajax({
         type: "post",
-        url: "/www/login/getUsers",
+        url: "/ajax/lista",
         dataType: "json",
         success: function(response, status) {
             let arraymap = response.map((item, index) => {

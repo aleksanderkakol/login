@@ -1,5 +1,3 @@
-<?php if(!isset($_SESSION['is_logged_in'])) : header('Location: '.ROOT_URL); ?>
-<?php else : ?>
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">Raporty</h3>
@@ -12,7 +10,7 @@
 	</div>
 	<div class="form-group">
 		<label>Nazwa przejścia/drzwi</label>
-	  	<input autocomplete="off" type="text" id="raport_doorname" oninput="doorSuggests();" name="raport_doorname" placeholder="Nazwa drzwi" class="form-control">
+	  	<input autocomplete="off" type="text" id="raport_doorname" oninput="doorSuggests('#raport_doorname');" name="raport_doorname" placeholder="Nazwa drzwi" class="form-control">
 	</div>
 	<div class="form-group">
 		<label>Rodzaj zdarzenia</label>
@@ -38,7 +36,7 @@
           <div class="btn_wrap">
 			<input class="btn btn-primary" name="submit" type="submit" value="Generuj raport" />
 			<?php if(isset($_SESSION['filename']) && file_exists($_SESSION['filename'])) : ?>
-			<a href="<?php echo $_SESSION['filename']; ?>" download >Pobierz</a>
+			<a class="btn btn-success" href="<?php echo $_SESSION['filename']; ?>" download ><span class="glyphicon glyphicon-save"></span> Pobierz</a>
 			<?php endif; ?>
           </div>
         </form>
@@ -47,20 +45,20 @@
 <script>
 window.addEventListener('DOMContentLoaded', (event) => {
 	$(document).ready(function() {
-    $("#date_start").datepicker({
-        altField: "#date_start_input",
-        altFormat: "dd-mm-yy"
-    })
-    .datepicker("setDate", new Date());
-
-    let date3 = $('#date_start').datepicker('getDate');
-    date3.setDate(date3.getDate() + 1);
-    
-    $('#date_end').datepicker({
-        altField: "#date_end_input",
-        altFormat: "dd-mm-yy"})
+		$("#date_start").datepicker({
+			altField: "#date_start_input",
+        	altFormat: "yy-mm-dd"
+		})
+		.datepicker("setDate", new Date());
+		
+		let date3 = $('#date_start').datepicker('getDate');
+		date3.setDate(date3.getDate() + 1);
+			
+		$('#date_end').datepicker({
+			altField: "#date_end_input",
+			altFormat: "yy-mm-dd"
+		})
         .datepicker('setDate',date3);
-});
+	});
 });
 </script>
-<?php endif; ?>

@@ -4,8 +4,22 @@ abstract class Model{
 	protected $stmt;
 
 	public function __construct(){
-		global $ip;
-		$this->dbh = new PDO("pgsql:host=".$ip.";port=".DB_PORT.";dbname=".DB_NAME, DB_USER, DB_PASS);
+		try {
+			$this->dbh = new PDO("pgsql:host=".DB_HOST.";port=".DB_PORT.";dbname=".DB_NAME, DB_USER, DB_PASS);
+		} catch (PDOException $e){
+			echo 'Błąd połączenia, sprawdź połączenie z serwerem lub skontaktuj się z administratorem '.$e->getMessage();
+			Messages::setMsg('Nie można połączyć się z serwerem, sprawdź połączenie lub skontaktuj się z administratorem', 'error');
+			// $cmd='C:\Server\test.exe"';
+			// function execInBackground($cmd){
+			// 	if(substr(php_uname(),0,7)=="Windows"){
+			// 		pclose(popen("start /B ".$cmd,"r"));
+			// 	}else{
+			// 		exec($cmd." > /dev/null &");
+			// 	}
+			// }
+			// execInBackground($cmd);
+			// exit;
+		}
 	}
 
 	public function query($query){

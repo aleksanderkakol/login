@@ -1,5 +1,3 @@
-<?php if(!isset($_SESSION['is_logged_in'])) : header('Location: '.ROOT_URL); ?>
-<?php else : ?>
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">Nowy użytkownik</h3>
@@ -27,4 +25,3 @@
     </form>
   </div>
 </div>
-<?php endif; ?>

@@ -1,5 +1,3 @@
-<?php if(!isset($_SESSION['is_logged_in'])) : header('Location: '.ROOT_URL); ?>
-<?php else : ?>
 <div>
 	<a class="btn btn-success btn-share" href="<?php echo ROOT_PATH; ?>visit/add">Dodaj wizytę</a>
 	<a class="btn btn-success btn-share pull-right" href="<?php echo ROOT_PATH; ?>visit/history">Historia wizyt</a>
@@ -62,4 +60,3 @@ window.addEventListener('DOMContentLoaded', (event) => {
 	});
 });
 </script>
-<?php endif; ?>

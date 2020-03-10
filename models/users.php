@@ -11,7 +11,6 @@ class UserModel extends Model{
 		$this->bind(':opr_id', $post['opr_id']);
 		$this->bind(':opr_level', $post['opr_level']);
 		$result = $this->execute();
-		$_SESSION['user_data']['level'] = $post['opr_level'];
 		print_r(json_encode($result));
 		return;
 	}
@@ -21,22 +20,17 @@ class UserModel extends Model{
 		$this->query("SELECT * FROM zewng.opr WHERE opr_id = :opr_id");
 		$this->bind(':opr_id', $opr_id);
 		$result = $this->single();
-		$old_password = $result['opr_pwd'];
 		$post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 		if($post['submit']){
-			$password = md5($post['opr_password']);
 			$new_password = md5($post['new_password']);
 			$confirm_password = md5($post['confirm_password']);
-			if($post['opr_password'] == '' || $post['new_password'] == '' || $post['confirm_password'] == ''){
+			if($post['new_password'] == '' || $post['confirm_password'] == ''){
 				Messages::setMsg('Proszę wypełnić wszystkie pola', 'error');
 				return;
 			} else if($post['new_password'] != $post['confirm_password']){
 				Messages::setMsg('Hasła nie są identyczne', 'error');
 				return;
-			} else if($password!=$old_password){
-				Messages::setMsg('Hasło jest nie prawidłowe', 'error');
-				return;
-			} else if($post['opr_password'] && $post['new_password'] && $post['confirm_password'] && $password == $old_password && $new_password == $confirm_password){
+			} else if($post['new_password'] && $post['confirm_password'] && $new_password == $confirm_password){
 				$this->query("UPDATE zewng.opr SET opr_pwd = :opr_pwd WHERE opr_id = :opr_id");
 				$this->bind(':opr_pwd', $new_password);
 				$this->bind(':opr_id', $opr_id);
