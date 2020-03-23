@@ -38,19 +38,31 @@
 				<p style="width:100%;" ><?php echo $name ?></p>
 		</div>
 	<?php endforeach; ?>
+	<?php if(isset($_GET["page"]) && is_numeric($_GET["page"]) && $viewmodel["pages"] > 1) : ?>
 		<nav class="col-md-12 col-sm-12 text-center" aria-label="Page navigation">
   			<ul class="pagination justify-content-center">
-				<li class="page-item <?php if($viewmodel["prev"]<=1) echo "disabled"; ?>">
+			  <?php if(isset($viewmodel["prev"]) && $_GET["page"]>1) :?>
+				<li class="page-item">
+      				<a class="page-link" href="<?php echo ROOT_URL; ?>photos?page=1">Pierwsza</a>
+    			</li>
+				<li class="page-item">
       				<a class="page-link" href="<?php echo ROOT_URL; ?>photos?page=<?php echo $viewmodel["prev"] ?>" tabindex="-1">Previous</a>
 				</li>
-				<?php for($i=1; $i<=$viewmodel["pages"];$i++) : ?>
+			  <?php endif; ?>
+				<?php for($i=$viewmodel["minus"]; $i<=$viewmodel["plus"];$i++) : ?>
 					<li class="page-item <?php if($i == $_GET["page"]) echo "active"; ?>"><a class="page-link" href="<?php echo ROOT_URL; ?>photos?page=<?php echo $i; ?>"><?php echo $i; ?></a></li>
 				<?php endfor; ?>
-    			<li class="page-item <?php if($viewmodel["next"]>=$viewmodel["pages"]) echo "disabled"; ?>">
-      				<a class="page-link" href="<?php echo ROOT_URL; ?>photos?page=<?php echo $viewmodel["next"] ?>">Next</a>
+				<?php if($_GET["page"]<$viewmodel["pages"]) : ?>
+    			<li class="page-item">
+      				<a class="page-link" href="<?php echo ROOT_URL; ?>photos?page=<?php echo $viewmodel["next"] ?>">Następna</a>
     			</li>
+				<li class="page-item">
+      				<a class="page-link" href="<?php echo ROOT_URL; ?>photos?page=<?php echo $viewmodel["pages"] ?>">Ostatnia</a>
+    			</li>
+				<?php endif; ?>
   			</ul>
 		</nav>
+		<?php endif; ?>
 	</div>
 	<?php elseif(!isset($viewmodel["images"]) || isset($viewmodel["images"]) && empty($viewmodel["images"])) : ?>
 		<div class="col-md-2 col-sm-2 container-img">
